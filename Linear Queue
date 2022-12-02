@@ -1,0 +1,58 @@
+#include<stdio.h>
+#define size 6
+void insert(int q[],int item,int*r)
+{
+    if(*r==size-1)
+    printf("queue is full\n");
+    else
+    {
+        (*r)++;
+        q[*r]=item;
+    }
+}
+int delete_front(int q[],int *r,int *f)
+{
+    if (*f>*r)
+    printf("Queue Underflow\n");
+    else
+    return q[(*f)++];
+}
+
+void display(int q[],int*f,int*r)
+{
+    int i;
+    if(*f>*r)
+    printf("empty\n");
+    else{
+        for(i=*f;i<=*r;i++)
+        {
+        printf("%d\n",q[i]);
+        }
+    }
+}
+void main()
+{
+    int r=-1,f=0,item,q[size],del_item;
+     int x;
+    while(1)
+    {
+        printf("following operations can be done:\n");
+        printf("1 for insertion\n 2 for deletion\n 3 for display\n");
+        scanf("%d",&x);
+        switch(x){
+            case 1:
+            printf("\nEnter value to be inserted: \n");
+            scanf("%d",&item);
+            insert(q,item,&r);
+            break;
+            case 2:
+           delete_front(q,&r,&f);
+           
+            break;
+            case 3:
+            display(q,&f,&r);
+            break;
+            default:printf("Exiting the Program\n");
+        }
+    }
+}
