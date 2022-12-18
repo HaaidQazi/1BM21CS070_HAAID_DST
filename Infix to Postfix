@@ -1,85 +1,103 @@
 #include<stdio.h>
 #include<string.h>
+#include<stdlib.h>
+#define MAX 100
+char stack[MAX];
+char infix[MAX];
+char postfix[MAX];
+void intopo();
+void print();
 int top=-1;
-char s[20];
-char infix[20];
-char postfix[20];
-void inf_to_post();
-int sp(char);
-int ip(char);
+int precedence(char);
 void push(char);
 char pop();
-void main()
+int Isempty();
+int main()
 {
-printf("enter a valid infix expression\n");
-scanf("%s",infix);
-inf_to_post();
-printf("The postfix expression is %s",postfix);
+ printf("enter your expresion\n");
+ gets(infix);
+ intopo();
+ print();
+ return 0;
 }
-void push(char item)
+void intopo()
 {
-s[++top]=item;
+   int j=0;
+    char symbol;char next;
+    for( int i=0;i<strlen(infix);i++)
+    { 
+        symbol=infix[i];
+        switch (symbol)
+        {
+        case '(' :
+             push(symbol);
+            break;
+
+             case ')':
+             while((next=pop())!='(')
+             postfix[j++]=next;
+             break;
+            case '+':
+            case '-':
+            case '/':
+            case '*':
+            case '^':
+            while(!Isempty()&&precedence(stack[top])>=precedence(symbol))
+            postfix[j++]=pop();
+            push(symbol);
+            break;
+        
+        default:
+        postfix[j++]=symbol;
+            break;
+        }
+
+    }
+    while(!Isempty())
+    postfix[j++]=pop();
+    postfix[j]='\0';
 }
-char pop()
+
+int precedence(char symbol)
 {
-return s[top--];
+     if(symbol=='^')
+     return 3;
+     else if(symbol=='/' || symbol == '*')
+     return 2;
+     else if (symbol=='+' || symbol == '-')
+     return 1;
+     else 
+     return 0;
+
 }
-int sp(char item)
-{
-switch(item)
-{
-case '+':
-case '-': return 2;
-case '*':
-case '/': return 4;
-case '^':
-case '$': return 5;
-case '(': return 0;
-case '#': return -1;
-default: return 8;
+void push(char c){
+    if(top==MAX-1){
+        printf("\nSTACK OVERFLOW\n");
+        return;
+    }
+    else{
+        top++;
+        stack[top]=c;
+    }
 }
+char pop(){
+    char c;
+    if(top==-1){
+        printf("\nSTACK UNDERFLOW\n");
+    }
+    else{
+     c= stack[top];
+        top--;
+      return c;
+    }
 }
- int ip( char item)
+void print()
 {
-switch(item)
-{
-case '+':
-case '-': return 1;
-case '*':
-case '/': return 3;
-case '^':
-case '$':return 6;
-case '(':return 9;
-case ')': return 0;
-default: return 7;
+    printf("%s", postfix);
 }
-}
-void inf_to_post()
+int Isempty()
 {
-int i,j=0;
-char symbol;
-push('#');
-for(i=0;i<strlen(infix);i++)
-{
-symbol=infix[i];
-while(sp(s[top])>ip(symbol))
-{
-postfix[j]=pop();
-j++;
-}
-if(sp(s[top]<ip(symbol)))
-{
-push(symbol);
-}
-if(sp(s[top])==ip(symbol))
-{
-pop();
-}
-}
-while(s[top]!='#')
-{
-postfix[j]=pop();
-j++;
-}
-postfix[j]='\0';
+if(top==-1)
+return 1;
+else return 0;
 }
